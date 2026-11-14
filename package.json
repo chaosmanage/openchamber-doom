@@ -1,0 +1,30 @@
+{
+  "name": "openchamber-doom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Low-resource DOOM in OpenChamber Work Status",
+  "openchamber": {
+    "apiVersion": 1,
+    "engines": { "openchamber": ">=2.7.0" },
+    "id": "low-power-doom",
+    "name": "DOOM",
+    "icon": "gamepad",
+    "contributes": {
+      "statusSection": {
+        "entry": "status/index.html",
+        "title": "DOOM",
+        "height": 315,
+        "defaultExpanded": false
+      }
+    }
+  },
+  "scripts": {
+    "build": "openchamber-guest-bundle status/main.ts status/main.js",
+    "check": "openchamber-guest-check",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@openchamber/sdk": "2.7.0"
+  }
+}

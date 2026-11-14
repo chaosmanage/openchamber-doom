@@ -1,0 +1,43 @@
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; }
+body { background:var(--oc-bg,#111113); color:var(--oc-fg,#f4f4f5); font-family:var(--oc-font,ui-sans-serif,system-ui,-apple-system,sans-serif); -webkit-font-smoothing:antialiased; overscroll-behavior:none; }
+[hidden] { display:none!important; }
+button, select { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible, select:focus-visible, canvas:focus-visible { outline:2px solid var(--oc-primary,#e5e5e5); outline-offset:2px; }
+.doom { width:100%; padding:10px; }
+.tile { display:flex; flex-direction:column; gap:9px; width:100%; padding:10px; text-align:left; color:inherit; background:var(--oc-elevated,#18181b); border:1px solid var(--oc-border,#2e2e33); border-radius:calc(var(--oc-radius,8px) + 1px); transition:border-color 120ms ease; }
+.tile:hover { border-color:var(--oc-primary,#e5e5e5); }
+.tile-head, .tile-foot, .play-bar, .controls { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.tile-name { font-size:12px; font-weight:700; letter-spacing:.02em; }
+.tile-tag { font-size:9px; color:var(--oc-muted,#a1a1aa); }
+.tile-art { width:100%; display:block; max-height:118px; aspect-ratio:320/110; image-rendering:pixelated; border:1px solid var(--oc-border,#2e2e33); border-radius:5px; }
+.tile-foot { font-size:9px; color:var(--oc-muted,#a1a1aa); }
+.tile-go { padding:5px 9px; border-radius:4px; font-weight:700; background:color-mix(in oklab,var(--oc-primary,#e5e5e5) 14%,transparent); color:var(--oc-primary-text,var(--oc-primary,#e5e5e5)); text-transform:uppercase; font-size:9px; }
+.caption { margin:8px 1px 0; font-size:9px; line-height:1.45; color:var(--oc-muted,#a1a1aa); }
+.play { min-width:0; }
+.play-bar { margin:0 0 8px; }
+.play-title { font-size:12px; margin-right:auto; }
+.bar-button, .icon-button, select { min-height:27px; padding:5px 8px; border:1px solid var(--oc-border,#2e2e33); border-radius:5px; color:inherit; background:var(--oc-elevated,#18181b); font-size:10px; }
+.bar-button:hover,.icon-button:hover { border-color:var(--oc-primary,#e5e5e5); }
+.icon-button { font-size:15px; padding:2px 8px; }
+.meter { color:var(--oc-muted,#a1a1aa); font-size:9px; font-variant-numeric:tabular-nums; }
+.game-frame { position:relative; overflow:hidden; background:#08090b; border:1px solid var(--oc-border,#2e2e33); border-radius:5px; }
+#screen { display:block; width:100%; aspect-ratio:320/200; height:auto; image-rendering:pixelated; background:#050505; outline-offset:-2px; }
+.overlay { position:absolute; inset:0; display:flex; justify-content:center; align-items:center; background:rgb(5 6 8 / .72); }
+.overlay-card { width:min(90%,250px); padding:12px; text-align:center; border:1px solid var(--oc-border,#2e2e33); border-radius:8px; background:var(--oc-elevated,#18181b); box-shadow:0 8px 25px #0005; }
+.kicker { margin:0; color:var(--oc-muted,#a1a1aa); text-transform:uppercase; font-size:9px; letter-spacing:.12em; }
+.overlay-title { margin:7px 0 4px; font-weight:700; font-size:14px; }
+.overlay-message { margin:0 0 10px; line-height:1.4; font-size:10px; color:var(--oc-muted,#a1a1aa); }
+.primary { width:100%; padding:7px; border:0; border-radius:5px; color:var(--oc-primary-contrast,#18181b); background:var(--oc-primary,#e5e5e5); font-size:10px; font-weight:700; }
+.controls { margin-top:8px; justify-content:flex-start; flex-wrap:wrap; }
+.mode-label { font-size:10px; color:var(--oc-muted,#a1a1aa); }
+select { flex:1; min-width:125px; max-width:185px; }
+.controls #pause { margin-left:auto; }
+.touch-keys { display:flex; gap:6px; margin-top:10px; justify-content:space-between; user-select:none; touch-action:none; }
+.touch-keys button { min-height:34px; min-width:38px; border:1px solid var(--oc-border,#2e2e33); border-radius:5px; background:var(--oc-elevated,#18181b); color:inherit; font-size:11px; touch-action:none; }
+.touch-keys button:active { background:var(--oc-primary,#e5e5e5); color:var(--oc-bg,#111113); }
+.dpad { display:flex; gap:4px; }
+@media(min-width:520px){ .touch-keys { display:none; } }
+@media(max-width:320px){ .touch-keys button { min-width:30px; } .play-bar { gap:3px; } }
