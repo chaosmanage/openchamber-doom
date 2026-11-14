@@ -1,6 +1,6 @@
 # DOOM for OpenChamber
 
-A private, zero-service, low-resource **1993 DOOM** Work Status section for OpenChamber. Separate from [OpenChamber Arcade](https://github.com/chaosmanage/openchamber-arcade), but uses the same OpenChamber theme variables and section conventions.
+Run DOOM inside Openchamber
 
 ## Features
 
@@ -38,6 +38,12 @@ bun test
 The shipped `status/main.js` and `status/assets/doom-packed.js` are already compiled. End users do **not** need Bun or any build steps.
 
 `status/assets/doom-packed.js` is generated using `node scripts/pack-engine.mjs status/assets/doom.wasm`. The raw `.wasm` is intentionally gitignored because OpenChamber's guest-file server only serves HTML/JS/CSS/JSON/SVG/PNG; the gzipped base64 JavaScript asset is lazily loaded with the extension's scoped URL token. It requires browser support for `DecompressionStream('gzip')`.
+
+## Demo
+
+<p align=center>
+<img width="90%"  alt="openchamber-doom" src="https://github.com/user-attachments/assets/290d81d0-0e72-45db-9711-9a8758562384" />
+</p>
 
 ## Upstream licenses / third-party content
 
