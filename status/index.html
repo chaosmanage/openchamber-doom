@@ -11,7 +11,7 @@
   <main class="doom" id="root">
     <section id="lobby" class="lobby">
       <button id="launch" class="tile" type="button" aria-label="Launch Doom">
-        <span class="tile-head"><span class="tile-name">DOOM</span><span class="tile-tag">1993 · WASM</span></span>
+        <span class="tile-head"><span class="tile-name">Freedoom Phase 1</span><span class="tile-tag">4 episodes · 36 maps</span></span>
         <svg class="tile-art" viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pixelated retro corridor">
           <rect width="320" height="110" fill="#14151a"/>
           <path d="M0 0L90 38H230L320 0Z" fill="#27252a"/>
@@ -25,7 +25,7 @@
           <path d="M158 110V85L149 77V110ZM171 110V85L162 77V110Z" fill="#55545a" opacity=".9"/>
           <path d="M3 82h35m245 0h34M2 94h19m280 0h18" stroke="#75706b" stroke-width="4"/>
         </svg>
-        <span class="tile-foot"><span>Silent · no GPU · loads only on play</span><span class="tile-go">Play</span></span>
+        <span class="tile-foot"><span>Silent · software renderer · loads on play</span><span class="tile-go">Play</span></span>
       </button>
       <p class="caption">No background work. Engine unloads when you leave the section.</p>
     </section>
@@ -33,7 +33,7 @@
     <section id="play" class="play" hidden>
       <header class="play-bar">
         <button id="exit" class="bar-button" type="button" aria-label="Exit Doom">‹ <span>Back</span></button>
-        <strong class="play-title">DOOM</strong>
+        <strong class="play-title">FREEDOOM</strong>
         <span id="meter" class="meter" aria-label="Measured engine processing per tick">— ms/tick</span>
         <button id="restart" class="icon-button" type="button" aria-label="Restart Doom" title="Restart">↻</button>
       </header>
@@ -58,7 +58,7 @@
         </select>
         <button id="pause" class="bar-button" type="button">Pause</button>
       </div>
-      <p class="caption" id="hint">Click the game · WASD / arrows move · Ctrl or F fires · Space or E opens · Shift runs · Esc menu</p>
+      <p class="caption" id="hint">WASD / arrows navigate · Enter selects · Esc opens menu · Ctrl fires · Space uses</p>
       <div class="touch-keys" aria-label="Touch controls">
         <div class="dpad">
           <button data-key="ArrowLeft" type="button" aria-label="Turn left">◀</button>
@@ -66,8 +66,12 @@
           <button data-key="ArrowDown" type="button" aria-label="Back">▼</button>
           <button data-key="ArrowRight" type="button" aria-label="Turn right">▶</button>
         </div>
-        <button data-key="Control" type="button">Fire</button>
-        <button data-key=" " type="button">Use</button>
+        <div class="touch-actions">
+          <button data-key="Control" type="button">Fire</button>
+          <button data-key=" " type="button">Use</button>
+          <button data-key="Enter" type="button" aria-label="Enter or select menu item">Enter</button>
+          <button data-key="Escape" type="button" aria-label="Open or close menu">Menu</button>
+        </div>
       </div>
     </section>
   </main>

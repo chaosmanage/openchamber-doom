@@ -35,9 +35,10 @@ button:focus-visible, select:focus-visible, canvas:focus-visible { outline:2px s
 .mode-label { font-size:10px; color:var(--oc-muted,#a1a1aa); }
 select { flex:1; min-width:125px; max-width:185px; }
 .controls #pause { margin-left:auto; }
-.touch-keys { display:flex; gap:6px; margin-top:10px; justify-content:space-between; user-select:none; touch-action:none; }
+.touch-keys { display:flex; flex-direction:column; gap:6px; margin-top:10px; user-select:none; touch-action:none; }
 .touch-keys button { min-height:34px; min-width:38px; border:1px solid var(--oc-border,#2e2e33); border-radius:5px; background:var(--oc-elevated,#18181b); color:inherit; font-size:11px; touch-action:none; }
 .touch-keys button:active { background:var(--oc-primary,#e5e5e5); color:var(--oc-bg,#111113); }
-.dpad { display:flex; gap:4px; }
+.dpad, .touch-actions { display:flex; gap:5px; }
+.dpad button, .touch-actions button { flex:1; min-width:0; }
 @media(min-width:520px){ .touch-keys { display:none; } }
-@media(max-width:320px){ .touch-keys button { min-width:30px; } .play-bar { gap:3px; } }
+@media(max-width:320px){ .play-bar { gap:3px; } }

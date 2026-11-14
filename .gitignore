@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 *.log
 status/assets/doom.wasm
+status/assets/*.wad

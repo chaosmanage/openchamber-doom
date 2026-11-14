@@ -4,6 +4,7 @@ import { applyHostReady } from '@openchamber/sdk/ui';
 declare global {
   interface Window {
     __doomPacked?: string;
+    __freedoomPacked?: string;
   }
 }
 
@@ -49,6 +50,9 @@ let sampledMilliseconds = 0;
 let booted = false;
 let observer: ResizeObserver | null = null;
 const pressed = new Set<number>();
+const pendingRelease = new Set<number>();
+const keyDownAtTick = new Map<number, number>();
+let completedTicks = 0;
 
 function get<T extends Element>(selector: string): T {
   const el = document.querySelector<T>(selector);
@@ -77,6 +81,8 @@ function hideMessage(): void {
 function releaseKeys(): void {
   for (const key of pressed) engine?.reportKeyUp(key);
   pressed.clear();
+  pendingRelease.clear();
+  keyDownAtTick.clear();
 }
 
 function stopLoop(): void {
@@ -148,12 +154,22 @@ function sendKey(key: string, down: boolean): void {
   const number = userKey(key);
   if (number === null || !Number.isFinite(number)) return;
   if (down) {
+    pendingRelease.delete(number);
     if (!pressed.has(number)) {
       pressed.add(number);
+      keyDownAtTick.set(number, completedTicks);
       engine.reportKeyDown(number);
     }
-  } else if (pressed.delete(number)) {
-    engine.reportKeyUp(number);
+  } else if (pressed.has(number)) {
+    // Quick touchscreen taps can end before the next Eco-mode game tick.
+    // Keep the key pressed until Doom has processed at least one tick.
+    if (keyDownAtTick.get(number) === completedTicks) {
+      pendingRelease.add(number);
+    } else {
+      pressed.delete(number);
+      keyDownAtTick.delete(number);
+      engine.reportKeyUp(number);
+    }
   }
 }
 
@@ -208,6 +224,12 @@ function tickLoop(): void {
   virtualMillis += 1000 / 35;
   try {
     engine.tickGame();
+    completedTicks++;
+    for (const key of pendingRelease) {
+      if (pressed.delete(key)) engine.reportKeyUp(key);
+      keyDownAtTick.delete(key);
+    }
+    pendingRelease.clear();
   } catch (error) {
     stopLoop();
     showMessage('Engine stopped', 'Game error', String(error), 'Back', exitGame);
@@ -236,10 +258,10 @@ function currentAssetUrl(name: string): string {
   return url.href;
 }
 
-async function loadPackedWasm(): Promise<Uint8Array> {
-  // OpenChamber's guest assets allow .js but not .wasm; use an offline gzip
-  // payload inside a JavaScript resource. This is fetched ONLY after Play.
-  const url = currentAssetUrl('doom-packed.js');
+async function loadPackedAsset(name: string, property: '__doomPacked' | '__freedoomPacked'): Promise<Uint8Array> {
+  // OpenChamber serves .js but not .wad or .wasm. Both payloads are shipped
+  // as offline gzipped JS assets and fetched only when the user presses Play.
+  const url = currentAssetUrl(name);
   // Load via script.src rather than eval or a second fetch. The asset token
   // restricts access to this extension's package.
   await new Promise<void>((resolve, reject) => {
@@ -249,9 +271,9 @@ async function loadPackedWasm(): Promise<Uint8Array> {
     el.onerror = () => { el.remove(); reject(new Error('Could not load packaged engine')); };
     document.head.append(el);
   });
-  const encoded = window.__doomPacked;
-  delete window.__doomPacked;
-  if (!encoded) throw new Error('Packaged engine missing');
+  const encoded = window[property];
+  delete window[property];
+  if (!encoded) throw new Error('Missing packaged asset: ' + name);
   const binary = atob(encoded);
   const compressed = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) compressed[i] = binary.charCodeAt(i);
@@ -268,11 +290,13 @@ async function launchGame(): Promise<void> {
   const mine = generation;
   lobby.hidden = true;
   play.hidden = false;
-  showMessage('Loading', 'Starting DOOM', 'Unpacking the engine once. No audio or network services.', 'Back', exitGame);
+  showMessage('Loading', 'Starting Freedoom', 'Loading Phase 1 and the silent engine locally.', 'Back', exitGame);
   syncHeight();
 
   try {
-    const bytes = await loadPackedWasm();
+    const bytes = await loadPackedAsset('doom-packed.js', '__doomPacked');
+    if (mine !== generation) return;
+    let wad: Uint8Array | null = await loadPackedAsset('freedoom1-packed.js', '__freedoomPacked');
     if (mine !== generation) return;
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) throw new Error('Canvas 2D is unavailable');
@@ -280,6 +304,8 @@ async function launchGame(): Promise<void> {
     virtualMillis = 1000;
     sampledTicks = 0;
     sampledMilliseconds = 0;
+    completedTicks = 0;
+    let wasmMemory: WebAssembly.Memory | null = null;
     const imports = {
       console: {
         onInfoMessage: (_ptr: number, _size: number) => {},
@@ -296,8 +322,17 @@ async function launchGame(): Promise<void> {
           frame = ctx.createImageData(outputWidth, outputHeight);
           frameWords = new Uint32Array(frame.data.buffer);
         },
-        wadSizes: () => {},
-        readWads: () => {},
+        wadSizes: (countPointer: number, sizePointer: number) => {
+          if (!wasmMemory || !wad) throw new Error('Freedoom WAD is missing');
+          const view = new DataView(wasmMemory.buffer);
+          view.setUint32(countPointer, 1, true);
+          view.setUint32(sizePointer, wad.byteLength, true);
+        },
+        readWads: (dataPointer: number, lengthsPointer: number) => {
+          if (!wasmMemory || !wad) throw new Error('Freedoom WAD is missing');
+          new Uint8Array(wasmMemory.buffer, dataPointer, wad.byteLength).set(wad);
+          new DataView(wasmMemory.buffer).setUint32(lengthsPointer, wad.byteLength, true);
+        },
       },
       ui: { drawFrame },
       // Doom can poll the clock in a busy-wait inside tickGame. Advance by
@@ -312,7 +347,9 @@ async function launchGame(): Promise<void> {
     const { instance } = await WebAssembly.instantiate(bytes.buffer as ArrayBuffer, imports);
     if (mine !== generation) return;
     engine = instance.exports as unknown as Exports;
+    wasmMemory = engine.memory;
     engine.initGame();
+    wad = null; // Release the ~29 MB decoded WAD once the engine owns its copy.
     loaded = true;
     hideMessage();
     resumeGame();

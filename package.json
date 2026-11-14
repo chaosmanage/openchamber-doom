@@ -1,6 +1,6 @@
 {
   "name": "openchamber-doom",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Low-resource DOOM in OpenChamber Work Status",
@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "openchamber-guest-bundle status/main.ts status/main.js",
+    "pack:wad": "node scripts/pack-wad.mjs",
     "check": "openchamber-guest-check",
     "test": "bun test"
   },
