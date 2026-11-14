@@ -1,40 +1,43 @@
-# Freedoom Phase 1 for OpenChamber
+# DOOM for OpenChamber
 
-Run Freedoom Phase 1 inside OpenChamber.
+Run the original **DOOM (1993) shareware episode** inside OpenChamber.
 
 <p align="center">
-<img width="90%" alt="OpenChamber Doom screenshot" src="https://github.com/user-attachments/assets/290d81d0-0e72-45db-9711-9a8758562384" />
+<img width="90%" alt="OpenChamber DOOM screenshot" src="https://github.com/user-attachments/assets/290d81d0-0e72-45db-9711-9a8758562384" />
 </p>
 
-A zero-service **Freedoom Phase 1** extension for OpenChamber's **Work Status** section, styled to match [OpenChamber Arcade](https://github.com/chaosmanage/openchamber-arcade).
+A lightweight, silent Work Status extension styled to match [OpenChamber Arcade](https://github.com/chaosmanage/openchamber-arcade).
 
-The extension uses the same software-rendered WebAssembly Doom engine as before, but **loads Freedoom Phase 1 v0.13.0 as its IWAD** instead of using the engine's bundled shareware episode. The WAD contains **four episodes with nine map slots each (36 maps, including secret levels)**. Only Phase 1 is installed; there is no Phase 2 selector.
+## Install
 
-## Features
+Open **Settings → Extensions** in OpenChamber and add:
 
-- **Collapsed by default.** The game engine and WAD load only after you expand the section and press **Play**.
-- **Silent**, fully offline after installation; no background service, network permissions, or LLM usage.
-- **Low-resource modes:** 10, 15 (default), 25, or 35 engine calls per second. Modes below 35 deliberately slow game time, reducing CPU work rather than merely skipping display frames.
-- **Pause on browser tab hide/loss of focus**, with game ticks suspended. Leaving the game releases its engine references; collapsing the section unloads its iframe.
-- **320×200 nearest-neighbor canvas**, downsampled from the unmodified engine's internal 640×400 software-rendered framebuffer. No GPU 3D pipeline.
-- On-screen **ms/tick** processing-time indicator (not a system-wide CPU monitor).
-- **Touch D-pad** plus Fire, Use, **Enter** (menu select), and **Menu** (Escape) buttons for narrow screens. Brief taps stay active through a game tick so that low-tick-rate modes register them.
-
-**Keyboard controls:** click the game canvas to focus; arrow keys / WASD navigate and move; **Enter** selects menu options; **Escape** opens or closes the in-game menu; Ctrl / F shoots; Space / E uses or opens doors; Shift runs; P pauses the extension. Touch controls appear on screens narrower than 520px.
-
-**Limitations:** No savegames; closing the game resets progress. The larger Phase 1 WAD increases initial load time and memory usage compared with the original shareware-only extension: the WAD is approximately **28.8 MB raw** / **14 MB packaged as JS**. CPU cost while playing still depends on map complexity and chosen tick mode.
-
-## Install and update
-
-Add the public repository from **Settings → Extensions**:
-
-```
+```text
 https://github.com/chaosmanage/openchamber-doom
 ```
 
-If already installed, update it manually using OpenChamber's extension updater. Alternatively, install from a local checkout of this repository.
+If already installed, update it manually using the extension updater. Enable **DOOM** in the Work Status section chooser if hidden. The repository is public and the built files are included; no build tools are needed to install it.
 
-A `git push` updates the repository but **does not automatically update your installed extension**.
+## Included game
+
+This extension runs the **original DOOM shareware** data embedded in the WebAssembly engine, not Freedoom.
+
+- **Episode 1: Knee-Deep in the Dead**, with nine original levels (eight regular and one secret map).
+- Original shareware maps, enemies, graphics, and weapons.
+- No other original DOOM episodes and no savegame persistence.
+- The shareware WAD is bundled inside the upstream `doom.wasm` engine; no additional WAD is downloaded or loaded.
+
+## Features
+
+- **Collapsed by default**; the engine loads only after **Play**.
+- **Silent:** no audio, service, external origin, or requested capabilities.
+- **CPU modes:** 10, 15 (default), 25, or 35 ticks per second. Lower modes intentionally slow game time to reduce CPU work.
+- **Pause on hide/focus loss**; no game ticks or rendering while paused. Exiting the game releases engine references.
+- **320 × 200 nearest-neighbor canvas**, downsampled from the engine's internal 640 × 400 software framebuffer.
+- **ms/tick** processing-time indicator (not total CPU utilization).
+- **Touch controls:** movement arrows, Fire, Use, **Enter** (select menu item), and Menu (Escape). Brief taps are held through a game tick, including in Eco mode.
+
+**Keyboard controls:** click the canvas to focus; WASD/arrow keys move or navigate, Ctrl/F fires, Space/E opens doors, Enter confirms a menu selection, Escape opens/closes the in-game menu, Shift runs, Q/R strafe, P pauses the extension. Touch controls appear on narrow screens.
 
 ## Build and test
 
@@ -46,20 +49,20 @@ bun test
 bunx tsc --noEmit
 ```
 
-Built `status/main.js`, `status/assets/doom-packed.js`, and `status/assets/freedoom1-packed.js` are committed so installing requires no build tools.
+`status/main.js` and `status/assets/doom-packed.js` are committed, so the package does not build code on installation.
 
-**Repack from the upstream artifacts (maintainer only):**
+To regenerate the engine asset from the verified upstream `doom.wasm`, run:
 
 ```sh
 node scripts/pack-engine.mjs status/assets/doom.wasm
-bun run pack:wad
 ```
 
-The packers SHA-256 verify the upstream files. Raw `.wasm` and `.wad` files are gitignored; OpenChamber's package-file server serves `.js` but not raw `.wasm` / `.wad`. Gzipped/base64 assets are dynamically loaded from the extension's own authenticated asset route only after Play, then unpacked using browser `DecompressionStream('gzip')`.
+The raw WebAssembly file is ignored by Git. OpenChamber serves the gzipped/base64 engine through an extension-local JavaScript asset, which is lazily loaded with an authenticated asset token. The browser must support `DecompressionStream('gzip')`.
 
-## Upstream assets and licensing
+## Upstream license and content
 
-- **Freedoom Phase 1 v0.13.0:** [official release](https://github.com/freedoom/freedoom/releases/tag/v0.13.0), `freedoom1.wad` SHA-256 `7323bcc168c5a45ff10749b339960e98314740a734c30d4b9f3337001f9e703d`. Its content license is reproduced in `LICENSE-FREEDOOM` (BSD-style).
-- **Doom WebAssembly engine v0.1.0:** [upstream source](https://github.com/jacobenget/doom.wasm), [release](https://github.com/jacobenget/doom.wasm/releases/tag/v0.1.0), SHA-256 `8edfe49a7583fd975199969302d8e9adcf8e714d0af72bf3e672f991fd810faa`. The engine is unmodified, with GPLv2-licensed code; see `LICENSE-ENGINE`. **The binary still embeds the original id Software shareware WAD as its fallback, but this extension explicitly loads Freedoom instead.** The embedded shareware data remains under its original distribution terms.
+The bundled engine is unmodified [jacobenget/doom.wasm v0.1.0](https://github.com/jacobenget/doom.wasm/releases/tag/v0.1.0), SHA-256 `8edfe49a7583fd975199969302d8e9adcf8e714d0af72bf3e672f991fd810faa`. The engine source contains GPLv2-licensed code; see `LICENSE-ENGINE` and the [upstream source](https://github.com/jacobenget/doom.wasm).
 
-OpenChamber and Doom are trademarks of their respective owners. This is an independent personal project.
+**The engine embeds the original id Software DOOM shareware WAD.** Shareware game data is *not* open source and remains subject to its original distribution terms. This extension does not include the paid game's content.
+
+OpenChamber and DOOM are trademarks of their respective owners. This is an independent personal extension.

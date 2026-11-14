@@ -17,12 +17,12 @@ test('WASM engine is intact and offline', () => {
   assert.equal(WebAssembly.validate(binary), true);
 });
 test('original DOOM engine initializes and runs a tick', async () => {
-  let memory, width, height, frames = 0, ms = 1000;
+  let memory, width, height, frames = 0, ms = 1000, wadSizeCalls = 0;
   const imports = {
     console: { onInfoMessage: () => {}, onErrorMessage: () => {} },
     loading: {
       onGameInit: (w, h) => { width = w; height = h; },
-      wadSizes: () => {}, readWads: () => {},
+      wadSizes: () => { wadSizeCalls++; }, readWads: () => { throw Error("Custom WAD loading should be disabled in shareware mode"); },
     },
     ui: {
       drawFrame: (ptr) => {
@@ -38,6 +38,7 @@ test('original DOOM engine initializes and runs a tick', async () => {
   instance.exports.initGame();
   assert.equal(width, 640);
   assert.equal(height, 400);
+  assert.equal(wadSizeCalls, 1);
   for (let t = 0; t < 36; t++) {
     ms += 1000 / 35;
     instance.exports.tickGame();
@@ -58,4 +59,17 @@ test('OpenChamber status manifest starts collapsed with no capabilities', () => 
   assert.equal(pkg.openchamber.contributes.statusSection.defaultExpanded, false);
   assert.equal(pkg.openchamber.contributes.capabilities, undefined);
   assert.equal(pkg.openchamber.id, 'low-power-doom');
+});
+
+test('original DOOM shareware is the only game and on-screen Enter remains', () => {
+  const html = readFileSync(join(root, 'status/index.html'), 'utf8');
+  const source = readFileSync(join(root, 'status/main.ts'), 'utf8');
+  assert.match(html, /data-key="Enter"/);
+  assert.match(html, /data-key="Escape"/);
+  assert.match(html, /data-key="Control"/);
+  assert.match(html, /data-key=" "/);
+  assert.match(source, /const pendingRelease = new Set<number>\(\)/);
+  assert.match(source, /wadSizes: \(\) => \{\}/);
+  assert.doesNotMatch(source, /freedoom/i);
+  assert.doesNotMatch(html, /freedoom/i);
 });
