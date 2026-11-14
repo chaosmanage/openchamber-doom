@@ -8,7 +8,7 @@ Run DOOM inside Openchamber
 
 ## Install
 
-Open **Settings → Extensions** on your Oracle VPS OpenChamber, and add:
+Open **Settings → Extensions** on your OpenChamber, and add:
 
 ```text
 https://github.com/chaosmanage/openchamber-doom
