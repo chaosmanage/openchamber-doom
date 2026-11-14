@@ -9,7 +9,7 @@ A private, zero-service, low-resource **1993 DOOM** Work Status section for Open
 - **Silent**: no audio backend, audio capture, or network permissions.
 - **Eco settings:** 10, 15 (default), 25 or 35 game ticks per second. In the lower modes, the game is deliberately slower than normal; virtual game time advances only one original DOOM tick per update. This is a genuine reduction in the amount of simulation work, not merely dropping draw frames.
 - **Pauses fully** on browser tab hidden, loss of focus, or Pause. Exiting frees engine references; collapsing unloads the entire iframe.
-- Displays a **160 × 100** nearest-neighbor pixelated canvas. The unmodified upstream engine still software-renders internally at **640 × 400**; downsampling reduces JavaScript pixel-transfer work, *not* engine rendering work. The CPU mode reduces simulation frequency instead.
+- Displays a **320 × 200** nearest-neighbor pixelated canvas. The unmodified upstream engine still software-renders internally at **640 × 400**; downsampling reduces JavaScript pixel-transfer work, *not* engine rendering work. The CPU mode reduces simulation frequency instead.
 - A live **ms/tick** counter measures actual game-loop processing time (not total CPU utilization).
 
 Controls: click canvas to focus; WASD or arrow keys move/turn; Ctrl or F shoot; Space or E use; Shift run; Q/R strafe; Escape menu; P pauses. Touch buttons appear on narrow screens. Savegames are not implemented.

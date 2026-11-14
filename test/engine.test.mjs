@@ -45,6 +45,14 @@ test('original DOOM engine initializes and runs a tick', async () => {
   assert.ok(frames > 0, 'Engine should emit rendered frames');
   assert.ok(memory.buffer.byteLength < 100 * 1024 * 1024, 'WASM memory budget');
 });
+test('game display uses classic 320x200 resolution', () => {
+  const html = readFileSync(join(root, 'status/index.html'), 'utf8');
+  const source = readFileSync(join(root, 'status/main.ts'), 'utf8');
+  assert.match(html, /<canvas id="screen" width="320" height="200"/);
+  assert.match(source, /outputWidth = Math\.min\(320, width\)/);
+  assert.match(source, /outputHeight = Math\.min\(200, height\)/);
+});
+
 test('OpenChamber status manifest starts collapsed with no capabilities', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.openchamber.contributes.statusSection.defaultExpanded, false);

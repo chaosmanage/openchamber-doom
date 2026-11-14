@@ -36,8 +36,8 @@ let frame: ImageData | null = null;
 let frameWords: Uint32Array | null = null;
 let frameWidth = 320;
 let frameHeight = 400;
-let outputWidth = 160;
-let outputHeight = 100;
+let outputWidth = 320;
+let outputHeight = 200;
 let running = false;
 let loaded = false;
 let generation = 0;
@@ -179,8 +179,8 @@ function drawFrame(pointer: number): void {
   const dest = frameWords;
   const stepX = Math.max(1, Math.floor(frameWidth / outputWidth));
   const stepY = Math.max(1, Math.floor(frameHeight / outputHeight));
-  // Downsample source to 160x100 BEFORE converting to RGBA. This reduces the
-  // JS copy/blit work, not the engine's internal 640x400 software rendering.
+  // Downsample source to 320x200 BEFORE converting to RGBA. This retains
+  // classic DOOM clarity without changing engine CPU use at 640x400.
   for (let y = 0; y < outputHeight; y++) {
     const offset = y * stepY * frameWidth;
     for (let x = 0; x < outputWidth; x++) {
@@ -289,8 +289,8 @@ async function launchGame(): Promise<void> {
         onGameInit: (width: number, height: number) => {
           frameWidth = width;
           frameHeight = height;
-          outputWidth = Math.min(160, width);
-          outputHeight = Math.min(100, height);
+          outputWidth = Math.min(320, width);
+          outputHeight = Math.min(200, height);
           canvas.width = outputWidth;
           canvas.height = outputHeight;
           frame = ctx.createImageData(outputWidth, outputHeight);

@@ -1,6 +1,6 @@
 {
   "name": "openchamber-doom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Low-resource DOOM in OpenChamber Work Status",
