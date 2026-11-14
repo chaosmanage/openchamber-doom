@@ -2,17 +2,9 @@
 
 Run DOOM inside Openchamber
 
-## Features
-
-- **Collapsed by default.** OpenChamber does not load this section's iframe until expanded.
-- **Engine loads on Play, not on opening Work Status.** A small launcher is visible first.
-- **Silent**: no audio backend, audio capture, or network permissions.
-- **Eco settings:** 10, 15 (default), 25 or 35 game ticks per second. In the lower modes, the game is deliberately slower than normal; virtual game time advances only one original DOOM tick per update. This is a genuine reduction in the amount of simulation work, not merely dropping draw frames.
-- **Pauses fully** on browser tab hidden, loss of focus, or Pause. Exiting frees engine references; collapsing unloads the entire iframe.
-- Displays a **320 × 200** nearest-neighbor pixelated canvas. The unmodified upstream engine still software-renders internally at **640 × 400**; downsampling reduces JavaScript pixel-transfer work, *not* engine rendering work. The CPU mode reduces simulation frequency instead.
-- A live **ms/tick** counter measures actual game-loop processing time (not total CPU utilization).
-
-Controls: click canvas to focus; WASD or arrow keys move/turn; Ctrl or F shoot; Space or E use; Shift run; Q/R strafe; Escape menu; P pauses. Touch buttons appear on narrow screens. Savegames are not implemented.
+<p align=center>
+<img width="90%"  alt="openchamber-doom" src="https://github.com/user-attachments/assets/290d81d0-0e72-45db-9711-9a8758562384" />
+</p>
 
 ## Install
 
@@ -25,6 +17,20 @@ https://github.com/chaosmanage/openchamber-doom
 This is a private repo, so the OpenChamber server needs your existing Git HTTPS credentials (as for Arcade). Or add the source folder `/workspace/projects/openchamber-doom`. Enable **DOOM** in the Work Status section chooser if hidden.
 
 There is no service, backend, external origin, capability request, or LLM usage.
+
+
+## Features
+
+- **Collapsed by default.** OpenChamber does not load this section's iframe until expanded.
+- **Engine loads on Play, not on opening Work Status.** A small launcher is visible first.
+- **Silent**: no audio backend, audio capture, or network permissions.
+- **Eco settings:** 10, 15 (default), 25 or 35 game ticks per second. In the lower modes, the game is deliberately slower than normal; virtual game time advances only one original DOOM tick per update. This is a genuine reduction in the amount of simulation work, not merely dropping draw frames.
+- **Pauses fully** on browser tab hidden, loss of focus, or Pause. Exiting frees engine references; collapsing unloads the entire iframe.
+- Displays a **320 × 200** nearest-neighbor pixelated canvas. The unmodified upstream engine still software-renders internally at **640 × 400**; downsampling reduces JavaScript pixel-transfer work, *not* engine rendering work. The CPU mode reduces simulation frequency instead.
+- A live **ms/tick** counter measures actual game-loop processing time (not total CPU utilization).
+
+Controls: click canvas to focus; WASD or arrow keys move/turn; Ctrl or F shoot; Space or E use; Shift run; Q/R strafe; Escape menu; P pauses. Touch buttons appear on narrow screens. Savegames are not implemented.
+
 
 ## Rebuilding
 
@@ -39,11 +45,6 @@ The shipped `status/main.js` and `status/assets/doom-packed.js` are already comp
 
 `status/assets/doom-packed.js` is generated using `node scripts/pack-engine.mjs status/assets/doom.wasm`. The raw `.wasm` is intentionally gitignored because OpenChamber's guest-file server only serves HTML/JS/CSS/JSON/SVG/PNG; the gzipped base64 JavaScript asset is lazily loaded with the extension's scoped URL token. It requires browser support for `DecompressionStream('gzip')`.
 
-## Demo
-
-<p align=center>
-<img width="90%"  alt="openchamber-doom" src="https://github.com/user-attachments/assets/290d81d0-0e72-45db-9711-9a8758562384" />
-</p>
 
 ## Upstream licenses / third-party content
 
