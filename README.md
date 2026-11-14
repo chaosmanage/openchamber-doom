@@ -14,7 +14,7 @@ Open **Settings → Extensions** on your OpenChamber, and add:
 https://github.com/chaosmanage/openchamber-doom
 ```
 
-This is a private repo, so the OpenChamber server needs your existing Git HTTPS credentials (as for Arcade). Or add the source folder `/workspace/projects/openchamber-doom`. Enable **DOOM** in the Work Status section chooser if hidden.
+Enable **DOOM** in the Work Status section chooser if hidden.
 
 There is no service, backend, external origin, capability request, or LLM usage.
 
