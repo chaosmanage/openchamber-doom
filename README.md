@@ -32,7 +32,7 @@ Add the public repository from **Settings → Extensions**:
 https://github.com/chaosmanage/openchamber-doom
 ```
 
-If already installed, update it manually using OpenChamber's extension updater. Alternatively, add the local source folder `/workspace/projects/openchamber-doom`.
+If already installed, update it manually using OpenChamber's extension updater. Alternatively, install from a local checkout of this repository.
 
 A `git push` updates the repository but **does not automatically update your installed extension**.
 
